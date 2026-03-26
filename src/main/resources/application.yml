@@ -8,9 +8,9 @@ spring:
   application:
     name: hackathon-backend
   datasource:
-    url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/bocra_db}
-    username: ${JDBC_DATABASE_USERNAME:postgres}
-    password: ${JDBC_DATABASE_PASSWORD:postgres}
+    url: ${JDBC_DATABASE_URL:${SPRING_DATASOURCE_URL:jdbc:postgresql://${PGHOST:${DB_HOST:localhost}}:${PGPORT:${DB_PORT:5432}}/${PGDATABASE:${DB_NAME:bocra_db}}}}
+    username: ${JDBC_DATABASE_USERNAME:${SPRING_DATASOURCE_USERNAME:${PGUSER:${DB_USER:postgres}}}}
+    password: ${JDBC_DATABASE_PASSWORD:${SPRING_DATASOURCE_PASSWORD:${PGPASSWORD:${DB_PASSWORD:postgres}}}}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

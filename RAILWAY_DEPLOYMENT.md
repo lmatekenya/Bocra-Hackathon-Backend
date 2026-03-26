@@ -38,11 +38,14 @@ This guide provides step-by-step instructions to deploy the Spring Boot backend 
 2. Wait for the database to provision
 3. Once ready, click on the PostgreSQL service
 4. Go to the **"Variables"** tab
-5. Copy the following connection variables (Railway auto-generates these):
-   - `POSTGRES_URL` (format: `postgresql://username:password@hostname:port/database`)
-   - `POSTGRES_USER` (username)
-   - `POSTGRES_PASSWORD` (password)
-   - `POSTGRES_DB` (database name)
+5. Copy the database connection variables from the PostgreSQL service.
+   Railway may expose these as `PG*` variables (recommended) and/or a URL variable:
+   - `PGHOST`
+   - `PGPORT`
+   - `PGDATABASE`
+   - `PGUSER`
+   - `PGPASSWORD`
+   - Optional URL variable such as `DATABASE_URL` or `POSTGRES_URL`
 
 ---
 
@@ -53,9 +56,9 @@ Go to your backend service's **"Variables"** tab and add the following:
 | Variable | Value | Description |
 |----------|-------|-------------|
 | `PORT` | `8083` | Application port |
-| `JDBC_DATABASE_URL` | `postgresql://<user>:<password>@<host>:<port>/<db>` | PostgreSQL connection URL |
-| `JDBC_DATABASE_USERNAME` | `<from_postgres_vars>` | Database username |
-| `JDBC_DATABASE_PASSWORD` | `<from_postgres_vars>` | Database password |
+| `JDBC_DATABASE_URL` | `jdbc:postgresql://<host>:<port>/<db>` | PostgreSQL JDBC URL |
+| `JDBC_DATABASE_USERNAME` | `<db_user>` | Database username |
+| `JDBC_DATABASE_PASSWORD` | `<db_password>` | Database password |
 | `APP_JWT_SECRET` | `<generate_strong_secret>` | JWT signing secret (min 32 characters) |
 | `APP_JWT_EXPIRATION_MS` | `3600000` | JWT token expiration (1 hour) |
 | `APP_CORS_ALLOWED_ORIGINS` | `*` | Allowed CORS origins (or your frontend URL) |
@@ -65,12 +68,17 @@ Go to your backend service's **"Variables"** tab and add the following:
 | `APP_RATE_LIMIT_ENABLED` | `true` | Enable rate limiting |
 | `APP_ENCRYPTION_ENABLED` | `true` | Enable encryption |
 
+If your backend service is linked to the Railway PostgreSQL service and receives
+`PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, and `PGPASSWORD`, the application can
+use those directly even without `JDBC_DATABASE_*`.
+
 ### Getting JDBC_DATABASE_URL
 
 1. Go to your PostgreSQL service in Railway
-2. Copy the `POSTGRES_URL` variable
-3. Format: `postgresql://username:password@hostname:port/database`
-4. Use this value for `JDBC_DATABASE_URL`
+2. Copy `PGHOST`, `PGPORT`, and `PGDATABASE`
+3. Build the value as:
+   `jdbc:postgresql://<PGHOST>:<PGPORT>/<PGDATABASE>`
+4. Use `PGUSER` for `JDBC_DATABASE_USERNAME` and `PGPASSWORD` for `JDBC_DATABASE_PASSWORD`
 
 ---
 
@@ -120,9 +128,10 @@ curl -X POST https://your-app.up.railway.app/api/auth/login \
 ## Troubleshooting
 
 ### Database Connection Errors
-- Verify `JDBC_DATABASE_URL` is correctly formatted
+- Verify `JDBC_DATABASE_URL` is correctly formatted as `jdbc:postgresql://...`
 - Ensure PostgreSQL service is running
 - Check that database credentials match
+- If logs show `Connection to localhost:5432 refused`, Railway DB variables were not injected into the backend service
 
 ### Build Failures
 - Check Maven dependencies in `pom.xml`
@@ -145,9 +154,14 @@ curl -X POST https://your-app.up.railway.app/api/auth/login \
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `PORT` | No | 8083 | Server port |
-| `JDBC_DATABASE_URL` | Yes | - | PostgreSQL connection URL |
-| `JDBC_DATABASE_USERNAME` | Yes | postgres | Database username |
-| `JDBC_DATABASE_PASSWORD` | Yes | - | Database password |
+| `JDBC_DATABASE_URL` | No* | - | PostgreSQL JDBC URL (`jdbc:postgresql://...`) |
+| `JDBC_DATABASE_USERNAME` | No* | postgres | Database username |
+| `JDBC_DATABASE_PASSWORD` | No* | - | Database password |
+| `PGHOST` | No* | - | Railway PostgreSQL host |
+| `PGPORT` | No* | - | Railway PostgreSQL port |
+| `PGDATABASE` | No* | - | Railway PostgreSQL database name |
+| `PGUSER` | No* | - | Railway PostgreSQL username |
+| `PGPASSWORD` | No* | - | Railway PostgreSQL password |
 | `APP_JWT_SECRET` | Yes | - | JWT secret (min 32 chars) |
 | `APP_JWT_EXPIRATION_MS` | No | 3600000 | JWT expiration in ms |
 | `APP_CORS_ALLOWED_ORIGINS` | No | http://localhost:3000 | Allowed CORS origins |
@@ -156,6 +170,8 @@ curl -X POST https://your-app.up.railway.app/api/auth/login \
 | `APP_CAPTCHA_ENABLED` | No | false | Enable Cloudflare Turnstile |
 | `APP_RATE_LIMIT_ENABLED` | No | true | Enable rate limiting |
 | `APP_ENCRYPTION_ENABLED` | No | true | Enable data encryption |
+
+`*` Provide either `JDBC_DATABASE_*` variables or the `PG*` database variables.
 
 ---
 

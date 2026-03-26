@@ -48,6 +48,11 @@ Spring Boot API for BOCRA public services and secure admin operations.
 - `JDBC_DATABASE_URL`
 - `JDBC_DATABASE_USERNAME`
 - `JDBC_DATABASE_PASSWORD`
+- `PGHOST` (optional Railway alternative to `JDBC_DATABASE_URL`)
+- `PGPORT` (optional Railway alternative to `JDBC_DATABASE_URL`)
+- `PGDATABASE` (optional Railway alternative to `JDBC_DATABASE_URL`)
+- `PGUSER` (optional Railway alternative to `JDBC_DATABASE_USERNAME`)
+- `PGPASSWORD` (optional Railway alternative to `JDBC_DATABASE_PASSWORD`)
 - `APP_JWT_SECRET`
 - `APP_JWT_EXPIRATION_MS`
 - `APP_CORS_ALLOWED_ORIGINS`
