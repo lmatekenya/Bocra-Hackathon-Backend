@@ -1,0 +1,2 @@
+org.springframework.boot.env.EnvironmentPostProcessor=\
+bw.org.bocra.backend.config.RailwayDatabaseEnvironmentPostProcessor

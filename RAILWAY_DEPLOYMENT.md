@@ -157,6 +157,8 @@ curl -X POST https://your-app.up.railway.app/api/auth/login \
 | `JDBC_DATABASE_URL` | No* | - | PostgreSQL JDBC URL (`jdbc:postgresql://...`) |
 | `JDBC_DATABASE_USERNAME` | No* | postgres | Database username |
 | `JDBC_DATABASE_PASSWORD` | No* | - | Database password |
+| `DATABASE_URL` | No* | - | Railway database URL (`postgresql://...` or `postgres://...`) |
+| `POSTGRES_URL` | No* | - | Railway database URL (`postgresql://...` or `postgres://...`) |
 | `PGHOST` | No* | - | Railway PostgreSQL host |
 | `PGPORT` | No* | - | Railway PostgreSQL port |
 | `PGDATABASE` | No* | - | Railway PostgreSQL database name |
