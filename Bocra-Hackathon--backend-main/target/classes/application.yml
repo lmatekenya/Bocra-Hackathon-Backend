@@ -1,0 +1,74 @@
+server:
+  port: ${PORT:8083}
+  forward-headers-strategy: framework
+  error:
+    include-message: never
+
+spring:
+  application:
+    name: hackathon-backend
+  datasource:
+    url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/bocra_db}
+    username: ${JDBC_DATABASE_USERNAME:postgres}
+    password: ${JDBC_DATABASE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:replace-this-with-a-very-long-and-random-jwt-secret-at-least-32-bytes}
+    expiration-ms: ${APP_JWT_EXPIRATION_MS:3600000}
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:3000}
+  admin:
+    bootstrap:
+      username: ${APP_ADMIN_BOOTSTRAP_USERNAME:admin}
+      password: ${APP_ADMIN_BOOTSTRAP_PASSWORD:Admin@12345}
+  security:
+    auth:
+      max-failed-attempts: ${APP_AUTH_MAX_FAILED_ATTEMPTS:5}
+      lock-minutes: ${APP_AUTH_LOCK_MINUTES:15}
+    captcha:
+      enabled: ${APP_CAPTCHA_ENABLED:false}
+      secret: ${APP_CAPTCHA_SECRET:}
+      verify-url: ${APP_CAPTCHA_VERIFY_URL:https://challenges.cloudflare.com/turnstile/v0/siteverify}
+    rate-limit:
+      enabled: ${APP_RATE_LIMIT_ENABLED:true}
+      login:
+        capacity: ${APP_RATE_LIMIT_LOGIN_CAPACITY:5}
+        window-seconds: ${APP_RATE_LIMIT_LOGIN_WINDOW_SECONDS:60}
+      public:
+        capacity: ${APP_RATE_LIMIT_PUBLIC_CAPACITY:20}
+        window-seconds: ${APP_RATE_LIMIT_PUBLIC_WINDOW_SECONDS:300}
+  encryption:
+    enabled: ${APP_ENCRYPTION_ENABLED:true}
+
+logging:
+  level:
+    bw.org.bocra.backend: INFO
+    org.springframework.security: WARN

@@ -1,0 +1,17 @@
+bw\org\bocra\backend\config\SecurityConfig.class
+bw\org\bocra\backend\model\Complaint.class
+bw\org\bocra\backend\model\CyberIncident.class
+bw\org\bocra\backend\exception\GlobalExceptionHandler.class
+bw\org\bocra\backend\security\JwtUtil.class
+bw\org\bocra\backend\repository\InquiryRepository.class
+bw\org\bocra\backend\service\ComplaintService.class
+bw\org\bocra\backend\controller\InquiryController.class
+bw\org\bocra\backend\controller\ComplaintController.class
+bw\org\bocra\backend\model\Inquiry.class
+bw\org\bocra\backend\HackathonApplication.class
+bw\org\bocra\backend\repository\ComplaintRepository.class
+bw\org\bocra\backend\service\CyberIncidentService.class
+bw\org\bocra\backend\repository\CyberIncidentRepository.class
+bw\org\bocra\backend\service\InquiryService.class
+bw\org\bocra\backend\controller\CyberIncidentController.class
+bw\org\bocra\backend\security\JwtAuthenticationFilter.class
