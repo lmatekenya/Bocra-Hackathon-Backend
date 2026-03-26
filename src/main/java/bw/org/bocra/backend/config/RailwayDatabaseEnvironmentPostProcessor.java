@@ -87,20 +87,43 @@ public class RailwayDatabaseEnvironmentPostProcessor implements EnvironmentPostP
     }
 
     private static String toJdbcPostgresUrl(String value) {
-        String url = value.trim();
-        if (url.startsWith("jdbc:postgresql://")) {
-            return url;
+        String raw = value.trim();
+        String candidate = raw.startsWith("jdbc:") ? raw.substring("jdbc:".length()) : raw;
+        if (candidate.startsWith("postgres://")) {
+            candidate = "postgresql://" + candidate.substring("postgres://".length());
         }
-        if (url.startsWith("postgresql://")) {
-            return "jdbc:" + url;
+        if (!candidate.startsWith("postgresql://")) {
+            return null;
         }
-        if (url.startsWith("postgres://")) {
-            return "jdbc:postgresql://" + url.substring("postgres://".length());
+
+        try {
+            URI uri = URI.create(candidate);
+            String host = uri.getHost();
+            if (!StringUtils.hasText(host)) {
+                return null;
+            }
+
+            StringBuilder jdbc = new StringBuilder("jdbc:postgresql://").append(host);
+            if (uri.getPort() > 0) {
+                jdbc.append(':').append(uri.getPort());
+            }
+
+            String path = uri.getRawPath();
+            if (StringUtils.hasText(path)) {
+                jdbc.append(path);
+            } else {
+                jdbc.append('/');
+            }
+
+            String query = uri.getRawQuery();
+            if (StringUtils.hasText(query)) {
+                jdbc.append('?').append(query);
+            }
+
+            return jdbc.toString();
+        } catch (IllegalArgumentException ex) {
+            return null;
         }
-        if (url.startsWith("jdbc:postgres://")) {
-            return "jdbc:postgresql://" + url.substring("jdbc:postgres://".length());
-        }
-        return null;
     }
 
     private static Credentials extractCredentials(String rawUrl) {
